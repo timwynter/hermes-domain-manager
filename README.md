@@ -41,7 +41,7 @@ Set API credentials in `~/.hermes/.env`:
 
 ```bash
 # Namecheap — requires IP whitelist
-NAMECHEAP_API_KEY=38780b696b61462f8f527ece772359c1
+NAMECHEAP_API_KEY=your_api_key
 NAMECHEAP_API_USER=your_api_user
 NAMECHEAP_USERNAME=your_username
 
