@@ -4,10 +4,10 @@ Use with: hermes cron create ... --script this_file --no-agent
 """
 
 import sys, os
-sys.path.insert(0, os.path.expanduser("~/Projects/domain-watch"))
+sys.path.insert(0, os.path.expanduser("~/Projects/hermes-domain-manager"))
 
-from domain_watch.monitor import scan_all
-from domain_watch.providers import list_providers
+from hermes_domain_manager.monitor import scan_all
+from hermes_domain_manager.providers import list_providers
 
 WARN_DAYS = 30
 

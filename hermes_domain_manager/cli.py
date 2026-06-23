@@ -23,8 +23,8 @@ import os
 import sys
 from datetime import date
 
-from domain_watch.providers import get_provider, list_providers, BUILTIN
-from domain_watch.monitor import scan_all
+from hermes_domain_manager.providers import get_provider, list_providers, BUILTIN
+from hermes_domain_manager.monitor import scan_all
 
 
 def _load_creds():
@@ -79,7 +79,7 @@ def cmd_dns(args):
 
 
 def cmd_dns_set(args):
-    from domain_watch.providers.base import DnsRecord
+    from hermes_domain_manager.providers.base import DnsRecord
     provider = args.provider if args.provider != "auto" else _detect_provider(args.domain)
     p = get_provider(provider)
     record = DnsRecord(type=args.type, host=args.host, value=args.value, ttl=args.ttl)
@@ -116,7 +116,7 @@ def cmd_balance(args):
 
 
 def cmd_renew_price(args):
-    from domain_watch.providers.base import DnsRecord
+    from hermes_domain_manager.providers.base import DnsRecord
     provider = args.provider if args.provider != "auto" else _detect_provider(args.domain)
     p = get_provider(provider)
     price = p.get_renewal_price(args.domain)

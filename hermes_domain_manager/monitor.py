@@ -4,7 +4,7 @@ import sys
 from datetime import date
 from typing import Optional
 
-from domain_watch.providers import get_provider, list_providers
+from hermes_domain_manager.providers import get_provider, list_providers
 
 
 def _emoji(days: Optional[int]) -> str:

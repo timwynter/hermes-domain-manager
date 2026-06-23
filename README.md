@@ -1,4 +1,4 @@
-# 🌐 Domain Watch
+# 🌐 Hermes Domain Manager
 
 > Multi-registrar domain management for Hermes Agent — monitor, manage DNS, and track expiries across Namecheap, GoDaddy, Cloudflare, and more.
 
@@ -25,14 +25,14 @@
 
 ```bash
 # Clone
-git clone https://github.com/timwynter/domain-watch.git
-cd domain-watch
+git clone https://github.com/timwynter/hermes-domain-manager.git
+cd hermes-domain-manager
 
 # Install (editable)
 pip install -e .
 
 # Or use directly
-PYTHONPATH=. python3 -m domain_watch.cli providers
+PYTHONPATH=. python3 -m hermes_domain_manager.cli providers
 ```
 
 ## 🔑 Configuration
@@ -60,33 +60,33 @@ CLOUDFLARE_API_TOKEN=your_token
 ### List All Domains
 
 ```bash
-domain-watch list
-domain-watch list --provider namecheap
+hermes-domain-manager list
+hermes-domain-manager list --provider namecheap
 ```
 
 ### DNS Records
 
 ```bash
 # List DNS
-domain-watch dns monah.ai
+hermes-domain-manager dns monah.ai
 
 # Add/Update record
-domain-watch dns-set monah.ai A @ 1.2.3.4 --ttl 600
+hermes-domain-manager dns-set monah.ai A @ 1.2.3.4 --ttl 600
 
 # Delete record
-domain-watch dns-delete monah.ai A test
+hermes-domain-manager dns-delete monah.ai A test
 ```
 
 ### Domain Expiry Monitor
 
 ```bash
 # Check all registrars, warn within 30 days
-domain-watch monitor --days 30
+hermes-domain-manager monitor --days 30
 
 # JSON output (for scripts)
 PYTHONPATH=. python3 -c "
-from domain_watch.monitor import scan_json
-from domain_watch.providers import list_providers
+from hermes_domain_manager.monitor import scan_json
+from hermes_domain_manager.providers import list_providers
 import json
 print(json.dumps(scan_json(list_providers()), indent=2))
 "
@@ -95,16 +95,16 @@ print(json.dumps(scan_json(list_providers()), indent=2))
 ### Account & Pricing
 
 ```bash
-domain-watch balance
-domain-watch renew-price monah.ai
+hermes-domain-manager balance
+hermes-domain-manager renew-price monah.ai
 ```
 
 ## 🤖 Hermes Agent Integration
 
-Domain Watch includes a [SKILL.md](SKILL.md) for Hermes Agent. Install it:
+Hermes Domain Manager includes a [SKILL.md](SKILL.md) for Hermes Agent. Install it:
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/timwynter/domain-watch/main/SKILL.md
+hermes skills install https://raw.githubusercontent.com/timwynter/hermes-domain-manager/main/SKILL.md
 ```
 
 Then ask Hermes: "check my domains", "add DNS record for monah.ai", "when does openfrunk.com expire?"
@@ -114,7 +114,7 @@ Then ask Hermes: "check my domains", "add DNS record for monah.ai", "when does o
 ```bash
 # Create silent daily check (alerts only when domains expiring)
 hermes cron create "0 9 * * *" \
-  --script ~/Projects/domain-watch/scripts/cron-check.py \
+  --script ~/Projects/hermes-domain-manager/scripts/cron-check.py \
   --no-agent \
   --name "domain-expiry-check"
 ```
@@ -122,7 +122,7 @@ hermes cron create "0 9 * * *" \
 ## 🏗️ Architecture
 
 ```
-domain_watch/
+hermes_domain_manager/
 ├── providers/           # Registrar adapters
 │   ├── base.py          # Abstract BaseProvider + DomainInfo/DnsRecord dataclasses
 │   ├── namecheap.py     # Namecheap API (XML)
@@ -135,9 +135,9 @@ domain_watch/
 
 ### Adding a Provider
 
-1. Create `domain_watch/providers/yourprovider.py`
+1. Create `hermes_domain_manager/providers/yourprovider.py`
 2. Subclass `BaseProvider` and implement all `@abstractmethod`s
-3. Register in `domain_watch/providers/__init__.py` → `BUILTIN` dict
+3. Register in `hermes_domain_manager/providers/__init__.py` → `BUILTIN` dict
 
 ```python
 from .base import BaseProvider, DomainInfo, DnsRecord

@@ -1,4 +1,4 @@
-# 🌐 Domain Watch · 域名监控
+# 🌐 Hermes Domain Manager · Hermes 域名管家
 
 > 为 Hermes Agent 设计的多注册商域名管理工具 — 跨 Namecheap、GoDaddy、Cloudflare 等平台监控、管理 DNS、追踪到期时间。
 
@@ -13,7 +13,7 @@
 ## ✨ 功能特性
 
 - **统一接口** — Namecheap、GoDaddy、Cloudflare 使用相同命令
-- **域名监控** — 可配置阈值的到期提醒
+- **Hermes 域名管家** — 可配置阈值的到期提醒
 - **DNS 管理** — 增删改查 DNS 记录
 - **续费价格** — 提前查看续费成本
 - **账户余额** — 追踪注册商余额
@@ -25,14 +25,14 @@
 
 ```bash
 # 克隆
-git clone https://github.com/timwynter/domain-watch.git
-cd domain-watch
+git clone https://github.com/timwynter/hermes-domain-manager.git
+cd hermes-domain-manager
 
 # 安装（可编辑模式）
 pip install -e .
 
 # 或直接使用
-PYTHONPATH=. python3 -m domain_watch.cli providers
+PYTHONPATH=. python3 -m hermes_domain_manager.cli providers
 ```
 
 ## 🔑 配置
@@ -60,33 +60,33 @@ CLOUDFLARE_API_TOKEN=你的令牌
 ### 列出所有域名
 
 ```bash
-domain-watch list
-domain-watch list --provider namecheap
+hermes-domain-manager list
+hermes-domain-manager list --provider namecheap
 ```
 
 ### DNS 记录
 
 ```bash
 # 列出 DNS
-domain-watch dns monah.ai
+hermes-domain-manager dns monah.ai
 
 # 添加/更新记录
-domain-watch dns-set monah.ai A @ 1.2.3.4 --ttl 600
+hermes-domain-manager dns-set monah.ai A @ 1.2.3.4 --ttl 600
 
 # 删除记录
-domain-watch dns-delete monah.ai A test
+hermes-domain-manager dns-delete monah.ai A test
 ```
 
 ### 域名到期监控
 
 ```bash
 # 检查所有注册商，30天内到期提醒
-domain-watch monitor --days 30
+hermes-domain-manager monitor --days 30
 
 # JSON 输出（用于脚本）
 PYTHONPATH=. python3 -c "
-from domain_watch.monitor import scan_json
-from domain_watch.providers import list_providers
+from hermes_domain_manager.monitor import scan_json
+from hermes_domain_manager.providers import list_providers
 import json
 print(json.dumps(scan_json(list_providers()), indent=2))
 "
@@ -95,16 +95,16 @@ print(json.dumps(scan_json(list_providers()), indent=2))
 ### 账户与价格
 
 ```bash
-domain-watch balance
-domain-watch renew-price monah.ai
+hermes-domain-manager balance
+hermes-domain-manager renew-price monah.ai
 ```
 
 ## 🤖 Hermes Agent 集成
 
-Domain Watch 包含 [SKILL.md](SKILL.md) 供 Hermes Agent 使用。安装方式：
+Hermes Domain Manager 包含 [SKILL.md](SKILL.md) 供 Hermes Agent 使用。安装方式：
 
 ```bash
-hermes skills install https://raw.githubusercontent.com/timwynter/domain-watch/main/SKILL.md
+hermes skills install https://raw.githubusercontent.com/timwynter/hermes-domain-manager/main/SKILL.md
 ```
 
 然后对 Hermes 说："检查我的域名"、"给 monah.ai 添加 DNS 记录"、"openfrunk.com 什么时候到期？"
@@ -114,7 +114,7 @@ hermes skills install https://raw.githubusercontent.com/timwynter/domain-watch/m
 ```bash
 # 创建静默每日检查（仅在域名到期时提醒）
 hermes cron create "0 9 * * *" \
-  --script ~/Projects/domain-watch/scripts/cron-check.py \
+  --script ~/Projects/hermes-domain-manager/scripts/cron-check.py \
   --no-agent \
   --name "domain-expiry-check"
 ```
@@ -122,7 +122,7 @@ hermes cron create "0 9 * * *" \
 ## 🏗️ 架构
 
 ```
-domain_watch/
+hermes_domain_manager/
 ├── providers/           # 注册商适配器
 │   ├── base.py          # 抽象基类 BaseProvider + DomainInfo/DnsRecord 数据类
 │   ├── namecheap.py     # Namecheap API (XML)
@@ -135,9 +135,9 @@ domain_watch/
 
 ### 添加新注册商
 
-1. 创建 `domain_watch/providers/yourprovider.py`
+1. 创建 `hermes_domain_manager/providers/yourprovider.py`
 2. 继承 `BaseProvider` 并实现所有 `@abstractmethod`
-3. 在 `domain_watch/providers/__init__.py` 的 `BUILTIN` 字典中注册
+3. 在 `hermes_domain_manager/providers/__init__.py` 的 `BUILTIN` 字典中注册
 
 ```python
 from .base import BaseProvider, DomainInfo, DnsRecord
