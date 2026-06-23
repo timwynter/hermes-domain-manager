@@ -62,13 +62,12 @@ class NamecheapProvider(BaseProvider):
 
     def list_domains(self) -> list[DomainInfo]:
         root = self._call("domains.getList", {"PageSize": "100"})
-        result = self._findall(
-            self._find(root, "CommandResponse"), "DomainGetListResult"
-        )
-        domains = []
-        for r in result[0] if result else []:
-            domains.extend(self._findall(r, "Domain"))
+        cr = self._find(root, "CommandResponse")
+        result = self._find(cr, "DomainGetListResult") if cr is not None else None
+        if result is None:
+            return []
         
+        domains = self._findall(result, "Domain")
         out = []
         for d in domains:
             a = d.attrib
